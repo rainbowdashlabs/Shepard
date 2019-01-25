@@ -3,10 +3,12 @@ package de.eldoria.shepard.commandmodules.saucenao.apiwrapper;
 import de.eldoria.shepard.commandmodules.saucenao.apiwrapper.imagedata.PixivImages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+@Disabled
 public class SaucenaoConfigApiWrapperTest {
     static SaucenaoApiWrapper wrapper;
 

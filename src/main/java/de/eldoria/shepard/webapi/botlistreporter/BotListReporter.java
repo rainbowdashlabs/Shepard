@@ -13,7 +13,6 @@ import de.eldoria.shepard.webapi.apiobjects.botlists.requests.DiscordBotsggReque
 import de.eldoria.shepard.webapi.apiobjects.botlists.votes.VoteWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import org.discordbots.api.client.DiscordBotListAPI;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.util.function.Consumer;
 @Slf4j
 public final class BotListReporter implements Runnable, ReqInit, ReqShardManager, ReqConfig, ReqDataSource {
     private final List<Consumer<VoteWrapper>> eventHandlers = new ArrayList<>();
-    private DiscordBotListAPI api;
     private ShardManager shardManager;
     private Config config;
     private DataSource source;
@@ -55,7 +53,6 @@ public final class BotListReporter implements Runnable, ReqInit, ReqShardManager
         long userCount = shardManager.getUserCache().size();
 
         log.debug("Current Server count is: " + guildCount);
-        sendTopgg(guildCount);
         sendDiscordBotlistCom(guildCount, userCount);
         sendDiscordBotsgg(guildCount);
         // TODO: uncomment when bot is approved.
@@ -88,16 +85,6 @@ public final class BotListReporter implements Runnable, ReqInit, ReqShardManager
                 config.getBotlist().getToken().getDiscordBotsgg(),
                 new DiscordBotsggRequest(guildCount, 1, 0),
                 200);
-    }
-
-    private void sendTopgg(int guildCount) {
-        log.debug("Sending Server stats to top.gg");
-        api.setStats(guildCount).toCompletableFuture()
-                .thenAccept(aVoid -> log.debug("Stats to top.gg send!"))
-                .exceptionally(e -> {
-                    log.warn(C.NOTIFY_ADMIN, "failed to send stats to top.gg", e);
-                    return null;
-                });
     }
 
     private void queryBotlistApi(String serviceName, String url, String authorization, Object requestPayload,
@@ -155,10 +142,6 @@ public final class BotListReporter implements Runnable, ReqInit, ReqShardManager
     @Override
     public void init() {
         if (config.getGeneralSettings().isBeta()) return;
-        api = new DiscordBotListAPI.Builder()
-                .token(config.getBotlist().getToken().getTopgg())
-                .botId(shardManager.getShardById(0).getSelfUser().getId())
-                .build();
         addEventHandler(new VoteHandler(shardManager, source));
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 120, 3600, TimeUnit.SECONDS);
