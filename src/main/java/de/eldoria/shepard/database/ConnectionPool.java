@@ -35,16 +35,28 @@ public class ConnectionPool implements ReqConfig, ReqInit {
 
     @Override
     public void init() {
-        source.setDataSourceName("PG Source");
-        source.setServerName(config.getDatabase().getAddress());
-        source.setDatabaseName(config.getDatabase().getDb());
-        source.setUser(config.getDatabase().getUsername());
-        source.setPassword(config.getDatabase().getPassword());
-        source.setPortNumber(config.getDatabase().getPort());
-        source.setMaxConnections(20);
-        source.setInitialConnections(2);
-        log.info("Created new connectionpool for {}@{}:{}/{}",
-                config.getDatabase().getUsername(), config.getDatabase().getAddress(),
-                config.getDatabase().getPort(), config.getDatabase().getDb());
+        try {
+            source.setDataSourceName("PG Source");
+            source.setServerName(config.getDatabase().getAddress());
+            source.setDatabaseName(config.getDatabase().getDb());
+            source.setUser(config.getDatabase().getUsername());
+            source.setPassword(config.getDatabase().getPassword());
+            source.setPortNumber(config.getDatabase().getPort());
+            source.setMaxConnections(20);
+            source.setInitialConnections(2);
+            try (var conn = source.getConnection()) {
+                conn.isValid(10);
+            }
+            log.info("Created new connectionpool for {}@{}:{}/{}",
+                    config.getDatabase().getUsername(), config.getDatabase().getAddress(),
+                    config.getDatabase().getPort(), config.getDatabase().getDb());
+        } catch (Exception e) {
+            log.error("Could not connect to database. Retrying in 10.");
+            try {
+                Thread.sleep(1000 * 10);
+            } catch (InterruptedException ignore) {
+            }
+            init();
+        }
     }
 }
