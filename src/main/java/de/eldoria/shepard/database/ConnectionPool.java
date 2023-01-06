@@ -51,7 +51,7 @@ public class ConnectionPool implements ReqConfig, ReqInit {
                     config.getDatabase().getUsername(), config.getDatabase().getAddress(),
                     config.getDatabase().getPort(), config.getDatabase().getDb());
         } catch (Exception e) {
-            log.error("Could not connect to database. Retrying in 10.");
+            log.error("Could not connect to database. Retrying in 10.", e);
             try {
                 Thread.sleep(1000 * 10);
             } catch (InterruptedException ignore) {
