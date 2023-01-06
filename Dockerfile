@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=build /build/libs/ShepardBot-*-all.jar bot.jar
 COPY database database
 
-ENTRYPOINT ["java", "-Dshepard.config=config/config.json", "-Dlog4j.configurationFile=config/log4j2.xml", "-jar" , "bot.jar"]
+ENTRYPOINT ["java", "-Dshepard.config=config/config.yml", "-Dlog4j.configurationFile=config/log4j2.xml", "-jar" , "bot.jar"]
