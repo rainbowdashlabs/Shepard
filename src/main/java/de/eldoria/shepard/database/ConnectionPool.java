@@ -42,7 +42,7 @@ public class ConnectionPool implements ReqConfig, ReqInit {
             source.setUser(config.getDatabase().getUsername());
             source.setPassword(config.getDatabase().getPassword());
             source.setPortNumber(config.getDatabase().getPort());
-            source.setMaxConnections(20);
+            source.setMaxConnections(5);
             source.setInitialConnections(2);
             try (var conn = source.getConnection()) {
                 conn.isValid(10);
