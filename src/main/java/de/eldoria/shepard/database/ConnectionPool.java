@@ -1,16 +1,17 @@
 package de.eldoria.shepard.database;
 
+import de.chojo.sadu.databases.PostgreSql;
+import de.chojo.sadu.datasource.DataSourceCreator;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.ds.PGPoolingDataSource;
 
 import javax.sql.DataSource;
 
 @Slf4j
 public class ConnectionPool implements ReqConfig, ReqInit {
-    private final PGPoolingDataSource source = new PGPoolingDataSource();
+    private DataSource source;
     private Config config;
 
     /**
@@ -36,20 +37,27 @@ public class ConnectionPool implements ReqConfig, ReqInit {
     @Override
     public void init() {
         try {
-            source.setDataSourceName("PG Source");
-            source.setServerName(config.getDatabase().getAddress());
-            source.setDatabaseName(config.getDatabase().getDb());
-            source.setUser(config.getDatabase().getUsername());
-            source.setPassword(config.getDatabase().getPassword());
-            source.setPortNumber(config.getDatabase().getPort());
-            source.setMaxConnections(5);
-            source.setInitialConnections(2);
+            var db = config.getDatabase();
+            source = DataSourceCreator.create(PostgreSql.postgresql())
+                    .configure(builder ->
+                            builder.applicationName("Shepard Legacy")
+                                   .host(db.getAddress())
+                                   .database(db.getDb())
+                                   .user(db.getUsername())
+                                   .password(db.getPassword())
+                                   .port(db.getPort()))
+                    .create()
+                            .withPoolName("PG Source")
+                            .withMaximumPoolSize(5)
+                            .withMinimumIdle(1)
+                            .build();
+
             try (var conn = source.getConnection()) {
                 conn.isValid(10);
             }
             log.info("Created new connectionpool for {}@{}:{}/{}",
-                    config.getDatabase().getUsername(), config.getDatabase().getAddress(),
-                    config.getDatabase().getPort(), config.getDatabase().getDb());
+                    db.getUsername(), db.getAddress(),
+                    db.getPort(), db.getDb());
         } catch (Exception e) {
             log.error("Could not connect to database. Retrying in 10.", e);
             try {

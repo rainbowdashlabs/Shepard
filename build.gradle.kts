@@ -18,6 +18,7 @@ repositories {
     maven {
         url = uri("https://jitpack.io")
     }
+    maven("https://eldonexus.de/repository/maven-public")
 }
 
 dependencies {
@@ -27,7 +28,9 @@ dependencies {
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.apache.commons", "commons-text", "1.9")
     implementation("com.sparkjava", "spark-core", "2.9.3")
-    implementation("postgresql", "postgresql", "9.3-1102.jdbc41")
+    implementation("org.postgresql", "postgresql", "42.5.1")
+    implementation("de.chojo.sadu", "sadu-datasource", "1.2.0")
+    implementation("de.chojo.sadu", "sadu-postgresql", "1.2.0")
     implementation("net.dv8tion", "JDA", "4.3.0_339") {
         exclude(module = "opus-java")
     }
