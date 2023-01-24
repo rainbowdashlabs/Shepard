@@ -22,26 +22,38 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "1.7.32")
-    implementation("org.apache.logging.log4j", "log4j-core", "2.17.0")
-    implementation("org.apache.logging.log4j", "log4j-slf4j-impl", "2.17.0")
+    // Logging
+    implementation("org.slf4j", "slf4j-api", "2.0.6")
+    implementation("org.apache.logging.log4j", "log4j-core", "2.19.0")
+    implementation("org.apache.logging.log4j", "log4j-slf4j2-impl", "2.19.0")
+    implementation("club.minnced", "discord-webhooks", "0.8.2")
+
+
+    // util
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.apache.commons", "commons-text", "1.9")
-    implementation("com.sparkjava", "spark-core", "2.9.3")
-    implementation("org.postgresql", "postgresql", "42.5.1")
-    implementation("de.chojo.sadu", "sadu-datasource", "1.2.0")
-    implementation("de.chojo.sadu", "sadu-postgresql", "1.2.0")
+
+    // discord
     implementation("net.dv8tion", "JDA", "4.3.0_339") {
         exclude(module = "opus-java")
     }
-    implementation("club.minnced", "discord-webhooks", "0.7.4")
+
+    // database
+    implementation("org.postgresql", "postgresql", "42.5.1")
+    implementation("de.chojo.sadu", "sadu-datasource", "1.2.0")
+    implementation("de.chojo.sadu", "sadu-postgresql", "1.2.0")
+
+
+    // api
+    implementation("com.sparkjava", "spark-core", "2.9.3")
     implementation("com.google.api-client", "google-api-client", "1.32.2")
     implementation("com.squareup.retrofit2", "retrofit", "2.9.0")
     implementation("com.google.code.gson", "gson", "2.8.9")
     implementation("org.yaml", "snakeyaml", "1.30")
-    implementation("org.postgresql", "postgresql", "42.3.1")
     implementation("info.debatty", "java-string-similarity", "2.0.0")
     implementation("com.google.guava", "guava", "31.0.1-jre")
+
+    // cancer
     compileOnly("org.projectlombok", "lombok", "1.18.22")
     annotationProcessor("org.projectlombok", "lombok", "1.18.22")
 
